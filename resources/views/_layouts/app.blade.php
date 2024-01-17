@@ -13,11 +13,11 @@
               @yield('content')
             </main>
             
-            @include('_partials.footer')    
+            @include('_partials.footer')
         </div>
         
     </div>
 
-  @include('_partials.footer')
+  @include('_includes.foot')
 </body>
 </html>
