@@ -61,4 +61,17 @@ class UserController extends Controller
             return redirect()->route('users.create')->with('error', 'Error creating user: ' . $e->getMessage());
         }
     }
+
+    public function show($id)
+    {
+        abort(404);
+    }
+
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+    }
 }

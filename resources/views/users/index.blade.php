@@ -33,6 +33,7 @@
                     <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Email</th>
                     <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Contact</th>
                     <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Role</th>
+                    <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Action</th>
                 </tr>
             </thead>
             <tbody class="text-gray-700">
@@ -47,6 +48,15 @@
                         <a class="hover:text-blue-500" href="tel:{{ $user->contact }}">{{ $user->contact }}</a>
                     </td>
                     <td class="w-1/3 text-left py-3 px-4">{{ $user->role }}</td>
+                    <td>
+                        <a
+                            class="bg:black hover:bg:red-700 delete-btn cursor-pointer"
+                            data-id="{{ $user->id }}"
+                            data-name="{{ $user->name }}"
+                        >
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -61,3 +71,62 @@
 </div>
 
 @endsection
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                const userId = button.getAttribute('data-id');
+                const userName = button.getAttribute('data-name');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: `You are about to delete user ${userName}?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                         // Dynamically create and submit the form
+                         const form = document.createElement('form');
+                        form.action = `{{ route('users.destroy', ':userId') }}`.replace(':userId', userId);
+                        form.method = 'POST';
+
+                        // Append CSRF token
+                        const csrfTokenInput = document.createElement('input');
+                        csrfTokenInput.type = 'hidden';
+                        csrfTokenInput.name = '_token';
+                        csrfTokenInput.value = '{{ csrf_token() }}';
+                        form.appendChild(csrfTokenInput);
+
+                        // Append method override for DELETE
+                        const methodInput = document.createElement('input');
+                        methodInput.type = 'hidden';
+                        methodInput.name = '_method';
+                        methodInput.value = 'DELETE';
+                        form.appendChild(methodInput);
+
+                        // Append submit button (optional)
+                        const submitButton = document.createElement('button');
+                        submitButton.type = 'submit';
+                        submitButton.className = 'btn btn-danger btn-sm';
+                        submitButton.innerText = 'Delete';
+                        form.appendChild(submitButton);
+
+                        // Append the form to the body
+                        document.body.appendChild(form);
+
+                        // Submit the form
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+
