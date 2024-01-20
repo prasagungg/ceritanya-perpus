@@ -18,3 +18,4 @@ Route::get('/', function () {
 });
 
 Route::resource('users', 'App\Http\Controllers\UserController');
+Route::resource('books', 'App\Http\Controllers\BookController');
