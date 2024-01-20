@@ -48,13 +48,19 @@
                         <a class="hover:text-blue-500" href="tel:{{ $user->contact }}">{{ $user->contact }}</a>
                     </td>
                     <td class="w-1/3 text-left py-3 px-4">{{ $user->role }}</td>
-                    <td>
+                    <td class="flex gap-5 items-center py-3">
                         <a
                             class="bg:black hover:bg:red-700 delete-btn cursor-pointer"
                             data-id="{{ $user->id }}"
                             data-name="{{ $user->name }}"
                         >
                             <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                        <a
+                            class="bg:black hover:bg:red-700 cursor-pointer"
+                            href="{{ route('users.edit', $user->id) }}"
+                        >
+                            <i class="fa fa-edit" aria-hidden="true"></i>
                         </a>
                     </td>
                 </tr>
