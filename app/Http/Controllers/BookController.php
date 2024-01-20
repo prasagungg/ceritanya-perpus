@@ -67,7 +67,9 @@ class BookController extends Controller
      */
     public function edit($id)
     {
-        //
+        $book = Book::findOrFail($id);
+
+        return view('books.edit', compact('book'));
     }
 
     /**
@@ -77,9 +79,18 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Book $book)
     {
-        //
+        $request->validate([
+            'title' => 'required|string',
+            'no_catalog' => 'required|string',
+            'no_isbn' => 'required|string',
+        ]);
+
+        $book->update($request->except('_token'));
+
+        return redirect()->route('books.index')->with("success", "Buku Berhasil Diperbarui");
+
     }
 
     /**
