@@ -42,7 +42,7 @@ class UserController extends Controller
                 'role' => ['required', User::getRolesList()],
                 'name' => 'required',
                 'email' => $isMasyarakatUmum ? 'nullable|email|unique:users' : 'required|email|unique:users',
-                'nim' => $isMasyarakatUmum ? 'nullable|numeric' : 'required|numeric',
+                'nim' => $isMasyarakatUmum ? 'nullable|numeric|unique:users' : 'required|numeric|unique:users',
                 'contact' => 'required|numeric',
                 // Add other validation rules as needed
             ]);
