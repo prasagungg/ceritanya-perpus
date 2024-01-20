@@ -34,7 +34,7 @@
                     <a
                         class="bg:black hover:bg:red-700 delete-btn cursor-pointer"
                         data-id="{{ $book->id }}"
-                        data-name="{{ $book->title }}"
+                        data-title="{{ $book->title }}"
                     >
                         <i class="fa fa-trash" aria-hidden="true"></i>
                     </a>
@@ -55,3 +55,62 @@
     {{ $books->appends(request()->query())->links() }}
 </div>
 @endsection
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                const bookId = button.getAttribute('data-id');
+                const title = button.getAttribute('data-title');
+
+                Swal.fire({
+                    title: 'Apakah yakin?',
+                    text: `Kamu yakin ingin menghapus buku ${title}?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                         // Dynamically create and submit the form
+                         const form = document.createElement('form');
+                        form.action = `{{ route('books.destroy', ':bookId') }}`.replace(':bookId', bookId);
+                        form.method = 'POST';
+
+                        // Append CSRF token
+                        const csrfTokenInput = document.createElement('input');
+                        csrfTokenInput.type = 'hidden';
+                        csrfTokenInput.name = '_token';
+                        csrfTokenInput.value = '{{ csrf_token() }}';
+                        form.appendChild(csrfTokenInput);
+
+                        // Append method override for DELETE
+                        const methodInput = document.createElement('input');
+                        methodInput.type = 'hidden';
+                        methodInput.name = '_method';
+                        methodInput.value = 'DELETE';
+                        form.appendChild(methodInput);
+
+                        // Append submit button (optional)
+                        const submitButton = document.createElement('button');
+                        submitButton.type = 'submit';
+                        submitButton.className = 'btn btn-danger btn-sm';
+                        submitButton.innerText = 'Delete';
+                        form.appendChild(submitButton);
+
+                        // Append the form to the body
+                        document.body.appendChild(form);
+
+                        // Submit the form
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
