@@ -7,6 +7,20 @@
 </div>
 
 <div class="w-full">
+    <!-- filter role -->
+    <form action="{{ route('users.index') }}" method="GET" class="py-5">
+        <label for="role">Filter by Role:</label>
+        <select name="role" id="role">
+            <option value="">All Roles</option>
+            @foreach($user_roles as $roleKey => $roleName)
+                <option value="{{ $roleKey }}" {{ request('role') == $roleKey ? 'selected' : '' }}>
+                    {{ $roleName }}
+                </option>
+            @endforeach
+        </select>
+        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Filter</button>
+    </form>
+
     <!-- check user count exist or not -->
     @if ($users->count() > 0)
     <div class="bg-white overflow-auto p-5">
