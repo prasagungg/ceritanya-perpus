@@ -53,7 +53,7 @@
         </table>
 
         <!-- pagination -->
-        {{ $users->links() }}
+        {{ $users->appends(request()->query())->links() }}
     </div>
     @else
         <p>No users found.</p>
