@@ -18,7 +18,16 @@
                 </option>
             @endforeach
         </select>
+        <input
+            type="text"
+            name="name"
+            id="name"
+            value="{{ old('name', request('name')) }}"
+            class="border rounded py-2 px-3"
+            placeholder="name"
+        >
         <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Filter</button>
+        <a href="{{ route('users.index') }}" class="bg-blue-500 text-white py-2 px-4 rounded">Clear Filter</a>
     </form>
 
     <!-- check user count exist or not -->

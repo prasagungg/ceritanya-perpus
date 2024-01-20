@@ -3,7 +3,12 @@
       <a href="{{ url('/') }}" class="text-white text-3xl font-semibold uppercase hover:text-gray-300">Ceritanya Perpus</a>
   </div>
   <nav class="text-white text-base font-semibold pt-3">
-      <a href="index.html" class="flex items-center active-nav-link text-white py-4 pl-6 nav-item">
+      <a
+        href="{{ url('/') }}"
+        class="flex items-center text-white py-4 pl-6 nav-item
+            {{ url()->current() == url('/') ? 'active-nav-link' : 'opacity-75 hover:opacity-100' }}
+        "
+       >
           <i class="fas fa-tachometer-alt mr-3"></i>
           Dashboard
       </a>
@@ -11,7 +16,12 @@
           <i class="fas fa-table mr-3"></i>
           Buku
       </a>
-      <a href="forms.html" class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+      <a
+        href="{{ route('users.index') }}"
+        class="flex items-center text-white py-4 pl-6 nav-item
+            {{ request()->routeIs('users.index') ? 'active-nav-link' : 'opacity-75 hover:opacity-100' }}
+        "
+       >
           <i class="fas fa-align-left mr-3"></i>
           Users
       </a>

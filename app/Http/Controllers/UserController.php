@@ -14,8 +14,12 @@ class UserController extends Controller
 
         // Apply role filter if provided
         $roleFilter = $request->input('role');
+        $nameFilter = $request->input('name');
+
         $usersQuery = User::when($roleFilter, function ($query) use ($roleFilter) {
             return $query->where('role', $roleFilter);
+        })->when($nameFilter, function ($query) use ($nameFilter) {
+            return $query->where('name', 'like', '%'.$nameFilter.'%');
         });
 
         // Paginate the filtered data
