@@ -34,7 +34,7 @@
     @if ($users->count() > 0)
     <div class="bg-white overflow-auto p-5">
         <table class="min-w-full bg-white">
-            <caption>Informasi User</caption>
+            <caption></caption>
             <thead class="bg-gray-800 text-white">
                 <tr>
                     <th class="text-left py-3 px-4 uppercase font-semibold text-sm">NIM</th>
@@ -89,6 +89,12 @@
                             href="{{ route('users.edit', $user->id) }}"
                         >
                             <i class="fa fa-edit" aria-hidden="true"></i>
+                        </a>
+                        <a
+                            class="bg:black hover:bg:red-700 cursor-pointer"
+                            href="{{ route('users.show', $user->id) }}"
+                        >
+                            <i class="fa fa-eye" aria-hidden="true"></i>
                         </a>
                     </td>
                 </tr>

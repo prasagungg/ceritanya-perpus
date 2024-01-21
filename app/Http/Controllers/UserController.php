@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Models\User;
+use App\Models\TransactionBorrow;
 
 class UserController extends Controller
 {
@@ -72,7 +73,17 @@ class UserController extends Controller
 
     public function show($id)
     {
-        abort(404);
+        $user = User::findOrFail($id);
+        $trx_with_books = TransactionBorrow::join('books', 'transaction_borrow.book_id', '=', 'books.id')
+            ->where('transaction_borrow.user_id', $user->id)
+            ->orderBy('transaction_borrow.borrow_start', 'desc')
+            ->paginate(10);
+
+        return view('users.show', [
+            'page_title' => 'peminjam',
+            'user' => $user,
+            'trx_with_books' => $trx_with_books,
+        ]);
     }
 
     public function edit($id)
