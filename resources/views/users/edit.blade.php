@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="flex items-center content-center pb-6 justify-between">
-    <h1 class="text-3xl text-black">Edit User</h1>
+    <h1 class="text-3xl text-black">Edit {{ ucwords($page_title) }}</h1>
     <a href="{{ route('users.index') }}" class="bg-blue-500 text-white py-2 px-4 rounded">Back</a>
 </div>
 
@@ -24,7 +24,7 @@
             </div>
 
             <div class="mb-4">
-                <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name*</label>
+                <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Nama*</label>
                 <input
                     type="text"
                     name="name"
@@ -56,7 +56,7 @@
             </div>
 
             <div class="mb-4">
-                <label for="contact" class="block text-gray-700 text-sm font-bold mb-2">Contact*</label>
+                <label for="contact" class="block text-gray-700 text-sm font-bold mb-2">Kontak*</label>
                 <input
                     type="number"
                     name="contact"
@@ -68,7 +68,7 @@
             </div>
 
             <div class="mt-4">
-                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Update User</button>
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Update</button>
             </div>
         </form>
     </div>

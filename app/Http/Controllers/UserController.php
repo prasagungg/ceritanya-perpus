@@ -25,6 +25,7 @@ class UserController extends Controller
         // Paginate the filtered data
         $users = $usersQuery->paginate(10);
         return view('users.index', [
+            'page_title' => 'peminjam',
             'users' => $users,
             'user_roles' => $user_roles,
         ]);
@@ -33,7 +34,10 @@ class UserController extends Controller
     public function create()
     {
         $user_roles = User::getRolesList();
-        return view('users.create', ['user_roles' => $user_roles]);
+        return view('users.create', [
+            'page_title' => 'peminjam',
+            'user_roles' => $user_roles
+        ]);
     }
 
     public function store(Request $request)
@@ -76,6 +80,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user_roles = User::getRolesList();
         return view('users.edit', [
+            'page_title' => 'peminjam',
             'user' => $user,
             'user_roles' => $user_roles,
         ]);
