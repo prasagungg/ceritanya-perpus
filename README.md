@@ -73,3 +73,19 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 '
 
 enter record you want to generate
+
+## Generate faker book
+
+'
+    php artisan db:seed --class=BooksTableSeeder
+'
+
+enter record you want to generate
+
+## Generate faker trx
+
+'
+    php artisan db:seed --class=TransactionBorrowTableSeeder
+'
+
+enter record you want to generate
