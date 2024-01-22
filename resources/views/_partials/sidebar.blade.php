@@ -25,7 +25,7 @@
           <i class="fas fa-align-left mr-3"></i>
           Peminjam
       </a>
-      <a href="tabs.html" class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+      <a href="{{ route('borrow') }}" class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item @if(request()->routeIs('borrow')) active-nav-link @else opacity-75 hover:opacity-100 @endif">
           <i class="fas fa-tablet-alt mr-3"></i>
           Peminjaman
       </a>
