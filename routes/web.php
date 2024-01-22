@@ -19,3 +19,11 @@ Route::get('/', function () {
 
 Route::resource('users', 'App\Http\Controllers\UserController');
 Route::resource('books', 'App\Http\Controllers\BookController');
+
+// Route For Borrow
+Route::get('borrow', 'App\Http\Controllers\BorrowController@index')->name('borrow');
+Route::get('borrow/create', 'App\Http\Controllers\BorrowController@create')->name('borrowCreate');
+Route::get('borrow/filter', 'App\Http\Controllers\BorrowController@filter')->name('filterBorrow');
+Route::post('borrow/createData', 'App\Http\Controllers\BorrowController@store')->name('borrowCreateData');
+Route::get('borrow/edit/{id}', 'App\Http\Controllers\BorrowController@edit')->name('editBorrow');
+Route::patch('borrow/update/{id}', 'App\Http\Controllers\BorrowController@update')->name('updateBorrow');
