@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Models\User;
+use App\Models\TransactionBorrow;
 
 class UserController extends Controller
 {
@@ -25,6 +26,7 @@ class UserController extends Controller
         // Paginate the filtered data
         $users = $usersQuery->paginate(10);
         return view('users.index', [
+            'page_title' => 'peminjam',
             'users' => $users,
             'user_roles' => $user_roles,
         ]);
@@ -33,7 +35,10 @@ class UserController extends Controller
     public function create()
     {
         $user_roles = User::getRolesList();
-        return view('users.create', ['user_roles' => $user_roles]);
+        return view('users.create', [
+            'page_title' => 'peminjam',
+            'user_roles' => $user_roles
+        ]);
     }
 
     public function store(Request $request)
@@ -68,7 +73,17 @@ class UserController extends Controller
 
     public function show($id)
     {
-        abort(404);
+        $user = User::findOrFail($id);
+        $trx_with_books = TransactionBorrow::join('books', 'transaction_borrow.book_id', '=', 'books.id')
+            ->where('transaction_borrow.user_id', $user->id)
+            ->orderBy('transaction_borrow.borrow_start', 'desc')
+            ->paginate(10);
+
+        return view('users.show', [
+            'page_title' => 'peminjam',
+            'user' => $user,
+            'trx_with_books' => $trx_with_books,
+        ]);
     }
 
     public function edit($id)
@@ -76,6 +91,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user_roles = User::getRolesList();
         return view('users.edit', [
+            'page_title' => 'peminjam',
             'user' => $user,
             'user_roles' => $user_roles,
         ]);

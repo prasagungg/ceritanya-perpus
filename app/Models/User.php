@@ -66,4 +66,9 @@ class User extends Authenticatable
 
         return $roles;
     }
+
+    public function borrows()
+    {
+        return $this->hasMany(TransactionBorrow::class, 'user_id');
+    }
 }
