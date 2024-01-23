@@ -32,7 +32,7 @@ class BorrowController extends Controller
         ->get();
         $user = User::get();
         return view('borrowing.create')
-        ->with('Book', $book)
+        ->with('books', $book)
         ->with('user', $user);
     }
 
