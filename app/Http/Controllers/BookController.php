@@ -40,7 +40,7 @@ class BookController extends Controller
         $request->validate([
             'title' => 'required|string',
             'no_catalog' => 'required|string',
-            'no_isbn' => 'required|string',
+            'no_isbn' => 'required|string|max:13',
         ]);
 
         Book::create($request->except('_token'));
