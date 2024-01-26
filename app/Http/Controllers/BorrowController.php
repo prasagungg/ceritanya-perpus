@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Models\Borrow;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class BorrowController extends Controller
 {
@@ -17,7 +18,7 @@ class BorrowController extends Controller
     public function index()
     {
         $borrows = Borrow::with(['user', 'book'])->get();
-        
+
         return view('borrowing.index', compact('borrows'));
     }
 
@@ -44,18 +45,33 @@ class BorrowController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'user_id' => 'required',
-            'book_id' => 'required',
-            'borrow_start' => 'required',
-            'borrow_end' => 'required',
-        ]);
+        $year = 2024; // You can replace this with your variable
+        try {
 
-        Book::where('id', $request->book_id)->update(['status' => 'inactive' ]);
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required',
+                'book_id' => 'required',
+                'borrow_start' => 'required|date|after_or_equal:'
+                    . $year . '-01-01|before_or_equal:' . $year . '-12-31',
+                'borrow_end' => 'required|date|after_or_equal:'
+                    . $year . '-01-01|before_or_equal:' . $year . '-12-31',
+            ]);
 
-        Borrow::create($request->all());
-        return redirect()->route('borrow')
-        ->with('success','Berhasil Menambahkan Peminjaman');
+            if ($validator->fails()) {
+                return redirect()->route('borrow')->with(
+                    'error',
+                    'Validation error: ' . $validator->errors()->first()
+                );
+            }
+
+            Book::where('id', $request->book_id)->update(['status' => 'inactive' ]);
+
+            Borrow::create($request->all());
+            return redirect()->route('borrow')
+            ->with('success','Berhasil Menambahkan Peminjaman');
+        } catch (Exception $e) {
+            return redirect()->route('borrow')->with('error', 'Error creating peminjaman: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -78,7 +94,7 @@ class BorrowController extends Controller
     public function edit($id)
     {
         $borrows = Borrow::findOrFail($id);
-        
+
         return view('borrowing.edit', compact('borrows'));
     }
 
@@ -94,14 +110,14 @@ class BorrowController extends Controller
         $request->validate([
             'return_on' => 'required|date',
         ]);
-        
+
         $borrow = Borrow::findOrFail($id);
-        
+
         Book::where('id', $borrow->book_id)->update(['status' => 'active']);
 
         $borrow->return_on = $request->return_on; // Perbarui kolom return_on
         $borrow->update();
-    
+
         return redirect()->route('borrow')
         ->with('success','Berhasil Mengubah Peminjaman');
     }

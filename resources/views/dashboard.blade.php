@@ -101,24 +101,9 @@
 
         <!-- check user_group_by_role count exist or not -->
         @if ($user_group_by_role->count() > 0)
-        <table class="bg-white">
-            <caption></caption>
-            <thead class="bg-gray-800 text-white">
-                <tr>
-                    <th class="w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm">Role</th>
-                    <th class="w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm">Total</th>
-                </tr>
-            </thead>
-            <tbody class="text-gray-700">
-                @foreach($user_group_by_role as $role_borrow)
-                <tr>
-                    <td class="text-left py-3 px-4">{{ $role_borrow->role }}</td>
-                    <td class="text-left py-3 px-4">{{ $role_borrow->borrows_count }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+        <canvas id="frequentBorrowBookByRole" width="400" height="400"></canvas>
         @endif
+
     </div>
     <div class="mt-12">
         <p class="text-xl pb-3 flex items-center">
@@ -127,26 +112,63 @@
 
         <!-- check transaction_borrow_group_by_borrow_start count exist or not -->
         @if ($transaction_borrow_group_by_borrow_start->count() > 0)
-        <table class="bg-white">
-            <caption></caption>
-            <thead class="bg-gray-800 text-white">
-                <tr>
-                    <th class="w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm">Tanggal Pinjam</th>
-                    <th class="w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm">Total</th>
-                </tr>
-            </thead>
-            <tbody class="text-gray-700">
-                @foreach($transaction_borrow_group_by_borrow_start as $borrow_start_trx)
-                <tr>
-                    <td class="text-left py-3 px-4">{{ $borrow_start_trx->borrow_date }}</td>
-                    <td class="text-left py-3 px-4">{{ $borrow_start_trx->borrows_count }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+        <canvas id="frequentBorrowTrxGroupByBorrowStart" width="400" height="400"></canvas>
         @endif
     </div>
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // data user group by role
+    var originalDataUserByRole = {!! json_encode($user_group_by_role) !!};
+    var labelsUserByRole = originalDataUserByRole.map(item => item.role);
+    var dataUserByRole = originalDataUserByRole.map(item => item.borrows_count);
+
+    var ctxRole = document.getElementById('frequentBorrowBookByRole').getContext('2d');
+    var pieChartBorrowUserGroupByRole = new Chart(ctxRole, {
+        type: 'pie',
+        data: {
+            labels: labelsUserByRole,
+            datasets: [{
+                label: 'Total',
+                data: dataUserByRole,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // data trx group by borrow start
+    var originalDataBorrowTrxGroupByBorrowStart = {!! json_encode($transaction_borrow_group_by_borrow_start) !!};
+    var labelsBorrowTrxGroupByBorrowStart = originalDataBorrowTrxGroupByBorrowStart.map(item => item.borrow_date);
+    var dataBorrowTrxGroupByBorrowStart = originalDataBorrowTrxGroupByBorrowStart.map(item => item.borrows_count);
+
+    var ctxTrx = document.getElementById('frequentBorrowTrxGroupByBorrowStart').getContext('2d');
+    var barChartBorrowTrxGroupByBorrowStart = new Chart(ctxTrx, {
+        type: 'bar',
+        data: {
+            labels: labelsBorrowTrxGroupByBorrowStart,
+            datasets: [{
+                label: 'Total',
+                data: dataBorrowTrxGroupByBorrowStart,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+</script>
 @endsection
