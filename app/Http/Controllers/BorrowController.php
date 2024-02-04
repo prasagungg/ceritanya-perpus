@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Book;
 use App\Models\Borrow;
 use App\Models\User;
@@ -110,21 +111,33 @@ class BorrowController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'return_on' => 'required|date',
-        ]);
+        try {
 
-        $borrow = Borrow::findOrFail($id);
+            $validator = Validator::make($request->all(), [
+                'return_on' => 'required|date',
+            ]);
 
-        Book::where('id', $borrow->book_id)->update(['status' => 'active']);
+            if ($validator->fails()) {
+                return redirect()->route('editBorrow', $id)->with(
+                    'error',
+                    'Validation error: ' . $validator->errors()->first()
+                );
+            }
 
-        # add id customize
-        $borrow->no_transaction = Borrow::generateCustomId($borrow->book_id);
-        $borrow->return_on = $request->return_on; // Perbarui kolom return_on
-        $borrow->update();
+            $borrow = Borrow::findOrFail($id);
 
-        return redirect()->route('borrow')
-        ->with('success','Berhasil Mengubah Peminjaman');
+            Book::where('id', $borrow->book_id)->update(['status' => 'active']);
+
+            # add id customize
+            $borrow->no_transaction = Borrow::generateCustomId($borrow->book_id);
+            $borrow->return_on = $request->return_on; // Perbarui kolom return_on
+            $borrow->update();
+
+            return redirect()->route('borrow')
+                ->with('success','Berhasil Mengubah Peminjaman');
+        } catch (Exception $e) {
+            return redirect()->route('editBorrow', $id)->with('error', 'Error updating peminjaman: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -140,12 +153,20 @@ class BorrowController extends Controller
 
     public function filter(Request $request)
     {
-        $start = $request->borrow_start;
-        $end = $request->borrow_end;
+        try {
+            $start = Carbon::parse($request->borrow_start);
+            $end = Carbon::parse($request->borrow_end);
 
-        $borrows = Borrow::whereDate('borrow_start', '>=', $start)
-        ->whereDate('borrow_start', '<=', $end)->get();
+            $borrows = Borrow::whereDate('borrow_start', '>=', $start)
+                ->whereDate('borrow_end', '<=', $end)
+                ->get();
 
-        return view('borrowing.index', compact('borrows'));
+            return view('borrowing.index', compact('borrows'));
+        } catch (Exception $e) {
+            // Handle the exception (e.g., log the error, redirect with an error message, etc.)
+            return redirect()->back()->with(
+                'error', 'Error when: ' . $e->getMessage()
+            );
+        }
     }
 }
