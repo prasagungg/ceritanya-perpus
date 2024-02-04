@@ -13,6 +13,7 @@ class Borrow extends Model
     ];
     protected $primaryKey = 'transaction_borrow_id';
     protected $fillable = [
+        'no_transaction',
         'user_id',
         'book_id',
         'borrow_start',
@@ -27,5 +28,14 @@ class Borrow extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public static function generateCustomId($bookId)
+    {
+        // Get the current datetime
+        $currentDatetime = now();
+
+        // Format the ID using 'T{book_id}-{datetime}'
+        return 'T' . $bookId . '-'. $currentDatetime->format('YmdHis');
     }
 }

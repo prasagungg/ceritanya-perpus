@@ -28,6 +28,7 @@
         <table class="text-left w-full border-collapse">
             <thead>
                 <tr>
+                    <th class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">ID</th>
                     <th class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">Nama Peminjam</th>
                     <th class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">Buku</th>
                     <th class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">Tanggal Peminjaman</th>
@@ -38,6 +39,7 @@
             <tbody>
                 @forelse($borrows as $borrow)
                     <tr class="hover:bg-grey-lighter">
+                        <td class="text-left py-3 px-6">{{ $borrow->no_transaction }}</td>
                         <td class="text-left py-3 px-6">{{ $borrow->user->name }}</td>
                         <td class="text-left py-3 px-6">{{ $borrow->book->title}}</td>
                         <td class="text-left py-3 px-6">{{\Carbon\Carbon::parse($borrow->borrow_start)->isoFormat('D MMMM Y') }}</td>

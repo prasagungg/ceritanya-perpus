@@ -66,6 +66,9 @@ class BorrowController extends Controller
 
             Book::where('id', $request->book_id)->update(['status' => 'inactive' ]);
 
+            # add id customize
+            $request->merge(['no_transaction' => Borrow::generateCustomId($request->book_id)]);
+
             Borrow::create($request->all());
             return redirect()->route('borrow')
             ->with('success','Berhasil Menambahkan Peminjaman');
@@ -115,6 +118,8 @@ class BorrowController extends Controller
 
         Book::where('id', $borrow->book_id)->update(['status' => 'active']);
 
+        # add id customize
+        $borrow->no_transaction = Borrow::generateCustomId($borrow->book_id);
         $borrow->return_on = $request->return_on; // Perbarui kolom return_on
         $borrow->update();
 
