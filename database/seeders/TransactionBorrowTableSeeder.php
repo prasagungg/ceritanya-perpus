@@ -28,6 +28,7 @@ class TransactionBorrowTableSeeder extends Seeder
             $book = Book::inRandomOrder()->first();
 
             DB::table('transaction_borrow')->insert([
+                'no_transaction' => $faker->unique()->numerify('##########'), // Assuming 'nim' is a 10-digit number
                 'user_id' => $user->id,
                 'book_id' => $book->id,
                 'borrow_start' => $faker->dateTimeThisYear(), // Generate random datetime within the current year

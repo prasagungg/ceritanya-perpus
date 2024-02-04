@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Book;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class BookController extends Controller
 {
@@ -37,15 +39,28 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string',
-            'no_catalog' => 'required|string',
-            'no_isbn' => 'required|string|max:13',
-        ]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|string',
+                'no_catalog' => 'required|string|unique:books,no_catalog',
+                'no_isbn' => 'required|string|max:13|unique:books,no_isbn',
+                // Add other validation rules as needed
+            ]);
 
-        Book::create($request->except('_token'));
+            if ($validator->fails()) {
+                return redirect()->route('books.create')->withInput()->with(
+                    'error',
+                    'Validation error: ' . $validator->errors()->first()
+                );
+            }
 
-        return redirect()->route('books.index')->with("success", "Buku Berhasil Ditambah");
+            Book::create($request->except('_token'));
+
+            return redirect()->route('books.index')->with("success", "Buku Berhasil Ditambah");
+        } catch (Exception $e) {
+            // Handle the exception (e.g., log the error, redirect with an error message, etc.)
+            return redirect()->route('books.create')->with('error', 'Error creating book: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -81,16 +96,31 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        $request->validate([
-            'title' => 'required|string',
-            'no_catalog' => 'required|string',
-            'no_isbn' => 'required|string',
-        ]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|string',
+                'no_catalog' => 'required|string|unique:books,no_catalog,' . $book->id,
+                'no_isbn' => 'required|string|max:13|unique:books,no_isbn,' . $book->id,
+                // Add other validation rules as needed
+            ]);
 
-        $book->update($request->except('_token'));
+            if ($validator->fails()) {
+                return redirect()->route('books.edit', $book->id)->withInput()->with(
+                    'error',
+                    'Validation error: ' . $validator->errors()->first()
+                );
+            }
 
-        return redirect()->route('books.index')->with("success", "Buku Berhasil Diperbarui");
+            $book->update($request->except('_token'));
 
+            return redirect()->route('books.index')->with("success", "Buku Berhasil Diperbarui");
+
+        } catch (Exception $e) {
+            // Handle the exception (e.g., log the error, redirect with an error message, etc.)
+            return redirect()->route('books.edit', $book->id)->with(
+                'error', 'Error updating book: ' . $e->getMessage()
+            );
+        }
     }
 
     /**

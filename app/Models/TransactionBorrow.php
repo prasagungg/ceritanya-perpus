@@ -12,6 +12,7 @@ class TransactionBorrow extends Model
     public $table = "transaction_borrow";
 
     protected $fillable = [
+        'no_transaction',
         'user_id',
         'book_id',
         'borrow_start',
@@ -19,4 +20,12 @@ class TransactionBorrow extends Model
         'return_on',
     ];
 
+    public static function generateCustomId($bookId)
+    {
+        // Get the current datetime
+        $currentDatetime = now();
+
+        // Format the ID using 'T{book_id}-{datetime}'
+        return 'T' . $bookId . '-'. $currentDatetime->format('YmdHis');
+    }
 }
